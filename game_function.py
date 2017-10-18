@@ -35,6 +35,7 @@ def check_bullet_allien_collisions(setting, screen, stats, sb, ship, aliens, bul
         for aliens in collision.values():
             stats.score += setting.alien_points * len(aliens)
             sb.prep_score()
+            sb.prep_life()
         check_high_score(stats, sb)
 
     if len(aliens) == 0:
@@ -42,13 +43,13 @@ def check_bullet_allien_collisions(setting, screen, stats, sb, ship, aliens, bul
         setting.increase_speed()
         create_fleet(setting, screen, aliens, ship)
 
-def update_alien(setting, stats, screen, ship, aliens, bullets):
+def update_alien(setting, stats, screen, ship, aliens, bullets,sb):
     check_fleet_edges(setting, aliens)
     aliens.update()
     check_aliens_bottom(setting, stats, screen, ship, aliens, bullets)
 
     if pygame.sprite.spritecollideany(ship, aliens):
-        ship_hit(setting, stats, screen, ship, aliens, bullets)
+        ship_hit(setting, stats, screen, ship, aliens, bullets,sb)
 
 def check_keyup(event, ship):
     if event.key == pygame.K_RIGHT:
@@ -77,6 +78,7 @@ def check_play_button(setting, screen, stats, play_button, sb, ship, aliens, bul
 
         stats.reset_stats()
         sb.prep_score()
+        sb.prep_life()
         sb.show_score()
 
         stats.game_active = True
@@ -138,7 +140,7 @@ def change_fleet_direction(setting, aliens):
         alien.rect.y +=setting.drop_speed
     setting.fleet_direction*=-1
 
-def ship_hit(setting, stats, screen, ship, aliens, bullets):
+def ship_hit(setting, stats, screen, ship, aliens, bullets,sb):
     #Decrement the life of the ship
     if stats.ship_left > 0:
         stats.ship_left-=1
@@ -147,10 +149,11 @@ def ship_hit(setting, stats, screen, ship, aliens, bullets):
         create_fleet(setting, screen, aliens, ship)
         ship.center_ship()
         sleep(0.5)
+        sb.prep_life()
         myfont = pygame.font.SysFont("monospace", 15)
         label = myfont.render("Some text!", 1, (255,255,0))
         screen.blit(label, (100, 100))
-        b = "MISS"
+        b = "MISS: Life -1"
         print(b)
         #Note it uses in a game so it will output the next one in history
     #Game Over uses infinitely at each game you play. (start) starts new game.
@@ -174,5 +177,6 @@ def check_high_score(stats, sb):
     if stats.score>stats.high_score:
         stats.high_score = stats.score
         sb.prep_high_score()
+        sb.prep_life()
 
 

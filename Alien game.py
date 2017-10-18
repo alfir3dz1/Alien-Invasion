@@ -23,7 +23,7 @@ def run_game():
 
     #Overall Stats before and after game
     stats = GameStats(ai_setting)
-    sb = Scoreboard(ai_setting, screen, stats)
+    sb = Scoreboard(ai_setting, screen, stats, ai_setting.ship_limit)
 
     #Shoots bullets
     bullets = Group()
@@ -35,8 +35,7 @@ def run_game():
         if stats.game_active:
             ship.update()
             update_bullet(ai_setting, screen, stats, sb, ship, bullets, aliens)
-            update_alien(ai_setting, stats, screen, ship, aliens, bullets)
+            update_alien(ai_setting, stats, screen, ship, aliens, bullets,sb)
         update_screen(screen,ai_setting, sb, ship, stats, bullets, aliens, play_button)
-
-
+#Note that the lives will not count to 3 to 1 and reset to 3 instead i use the print way
 run_game()
